@@ -7,6 +7,8 @@
 
 ---
 
+FitFindr helps users to find secondhand clothing items, build outfits using pieces they already own, and generate a social-media-style fit card. The search_listing tool finds matching listings based on the user's query and filters, such as size and price. If a matching item is found, the suggested outfit uses the selected listing and the user’s wardrobe to create a styling recommendation, and then create_fit_card turns that outfit into a shareable caption. If search_listing returns no results, FitFindr should explain why no matches were found, suggest alternative search criteria, and stop without calling the other tool
+
 ## Tools
 
 List every tool your agent will use. For each tool, fill in all four fields.
