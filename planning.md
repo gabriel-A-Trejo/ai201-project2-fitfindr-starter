@@ -110,8 +110,8 @@ First, it reads the user’s request and extracts constraints like item type, si
 
 Next, it calls suggest_outfit using:
 
-* the selected listing (new_item)
-* the user’s wardrobe
+     the selected listing (new_item)
+     the user’s wardrobe
 
 If an outfit is successfully generated, it proceeds to create_fit_card to produce a final social-style caption.
 
@@ -180,11 +180,17 @@ For each tool, describe the specific failure mode you're handling and what the a
      search_listings() using load_listings() from the data loader — then test it against 3 queries
      before trusting it" is a plan. -->
 
+
+
 **Milestone 3 — Individual tool implementations:**
+I will give claude my tool 1 spec inputs, return value, failure mode and ask it implemented the functions for milestone 3 and making sure that it follows through all the todos. using load_listing for the data loader then I will trouble check based on the TODOS.
+
+Other tools will be pretty much be the same way, and double checking my work, and making that the AI follows the TODOs
 
 **Milestone 4 — Planning loop and state management:**
 
----
+I will give claude for the planning loop and state management and sending the architecture to build the loop and state management initially and double check my work, when is completed. 
+
 
 ## A Complete Interaction (Step by Step)
 
@@ -195,11 +201,96 @@ Write out what a full user interaction looks like from start to finish — tool 
 **Step 1:**
 <!-- What does the agent do first? Which tool is called? With what input? -->
 
+The agent first parses the user Query inside run_agent() and no external tool is called yet
+
+Input: 
+description = "vintage graphic tee"
+size = None
+max_price = 30
+
 **Step 2:**
 <!-- What happens next? What was returned from step 1? What tool is called now? -->
 
+The agent calls the first tool:
+search_listings(
+    description="vintage graphic tee",
+    size=None,
+    max_price=30
+)
+
+Loads dataset using load_listings()
+Filters listings by price (≤ 30)
+Optionally filters by size (none here)
+Scores listings using keyword overlap (title, tags, description)
+Sorts results by relevance
+
+that is stored in session["search_result"]
+
 **Step 3:**
 <!-- Continue until the full interaction is complete -->
+The agent selects the top-ranked listing 
+Selected_item = session["Search_results"][0]
+
+session["selected_item"]
+
+then next is suggest_outfit
+suggest_outfit(
+     new_item=selected_item
+     wardrobe=selected_wardrobe
+)
+
+Next steps is
+if the wardrobe has items -> matches outfits wardrobe pieces
+if wardrobe is empty -> gives general styling advice
+uses Groq LLM
+Generates 1-2 combination with explanations
+
+that is stored in 
+Session["outfit_suggestion"]
+
+then calls 
+create_fit_card(
+    outfit=session["outfit_suggestion"],
+    new_item=selected_item
+)
+
+then validates outfit is not empty
+sends outfit + item data to Groq LLM
+Generates a short social-media-style captions (2-4 sentences)
+Mention item, price, and platform naturally.
+which is stored in session["fit_card"]
 
 **Final output to user:**
 <!-- What does the user actually see at the end? -->
+
+
+ Top listing found
+Title: Y2K Baby Tee — Butterfly Print
+Price: $18.0
+Category: tops
+Brand: None
+Platform: depop
+
+Description:
+Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.
+
+Style Tags: y2k, vintage, graphic tee, cottagecore
+Colors: white, pink, purple
+Size: S/M
+Condition: excellent
+👗 Outfit idea
+I'd be happy to help you create some outfits using the Y2K Baby Tee — Butterfly Print. Here are two complete outfits that you can create using this thrifted item and specific pieces from your wardrobe:
+
+**Outfit 1: Casual Chic**
+Pair the Y2K Baby Tee — Butterfly Print with the Baggy straight-leg jeans, dark wash, and the Chunky white sneakers. This combination works stylistically because the dark wash jeans provide a nice contrast to the light and playful butterfly print on the tee. The chunky white sneakers add a sporty touch to the overall look, which complements the casual vibe of the graphic tee. To complete the outfit, you can add the Brown leather belt to add a touch of warmth and texture to the overall look.
+
+**Outfit 2: Edgy Cottagecore**
+Pair the Y2K Baby Tee — Butterfly Print with the Wide-leg khaki trousers and the Black combat boots. This combination may seem unexpected, but it works because the khaki trousers add a nice earthy tone to the overall look, which complements the pastel colors of the butterfly print. The black combat boots add an edgy touch to the outfit, which balances out the sweetness of the graphic tee. To complete the outfit, you can add the Vintage black denim jacket to add a cool and laid-back vibe to the overall look. The jacket will also help to ground the look and prevent it from feeling too sweet or childish.
+
+In both outfits, the Y2K Baby Tee — Butterfly Print is the star of the show, and the other pieces are used to complement and enhance its unique style. The key is to balance out the playfulness of the graphic tee with other pieces that add contrast and texture to the overall look.
+
+✨ Your fit card
+Just threw on my fave Y2K Baby Tee — Butterfly Print and I'm feeling the casual chic vibes. Paired it with my trusty baggy jeans and chunky whites for a look that's equal parts comfy and stylish. Scored this cutie on depop for $18.0 and I'm obsessed - the perfect addition to my thrifted wardrobe.
+Try these queries
+
+
