@@ -165,7 +165,7 @@ For each tool, describe the specific failure mode you're handling and what the a
 
 ---
 
-![Architecture](images/Architecture.png)
+![Architecture](Image/Architecture.png)
 
 ## AI Tool Plan
 
